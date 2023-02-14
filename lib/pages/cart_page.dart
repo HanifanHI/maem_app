@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/widgets/items/item_info.dart';
-import '/shared/style.dart';
+import '../widgets/items/item_info.dart';
+import '../shared/style.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});

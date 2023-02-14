@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '/widgets/items/item_restaurant.dart';
-import '/widgets/slivers/sliver_seaarch.dart';
-import '/models/restaurant.dart';
-import '/shared/style.dart';
+import '../widgets/items/item_restaurant_search.dart';
+import '../provider/restaurant_search_provider.dart';
+import '../widgets/slivers/sliver_seaarch.dart';
+import '../shared/style.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -15,37 +16,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final List<RestaurantElement> _search = [];
-  List<RestaurantElement> _rest = [];
-
   final TextEditingController _controller = TextEditingController();
 
-  List<RestaurantElement> _parseRest(String? json) {
-    if (json == null) {
-      return [];
-    }
-    Restaurant data = restaurantFromJson(json);
-    _rest = data.restaurants.toList();
-    return _rest;
-  }
-
-  _searchRestItem(String text) {
-    _search.clear();
-    if (text.isEmpty) {
-      setState(() {});
-      return _rest;
-    }
-
-    for (var e in _rest) {
-      if (e.id.contains(text) ||
-          e.name.toLowerCase().contains(text.toLowerCase())) {
-        _search.add(e);
-      }
-    }
-    setState(() {});
-  }
-
-  _buildAppBar() {
+  _buildAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(75),
       child: Stack(
@@ -106,6 +79,83 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  Widget _buildBody() {
+    return Consumer<RestaurantSearchProvider>(
+      builder: (context, search, child) => CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            delegate: SliverSearch(
+              controller: _controller,
+              searchRestItem: (value) {
+                if (value.isNotEmpty) {
+                  search.fetchRestaurantSearch(value);
+                }
+              },
+            ),
+            floating: true,
+          ),
+          search.resultState == ResultState.loading
+              ? const SliverToBoxAdapter(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: cOrangeColor,
+                    ),
+                  ),
+                )
+              : search.resultState == ResultState.hasData
+                  ? SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return _controller.text.isEmpty
+                              ? const SizedBox()
+                              : ItemRestaurantSearch(
+                                  restSearch: search
+                                      .restaurantSearch.restaurants[index],
+                                );
+                        },
+                        childCount: search.restaurantSearch.restaurants.length,
+                      ),
+                    )
+                  : search.resultState == ResultState.noData
+                      ? SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(
+                              search.message,
+                              style: purpleTextStyle.copyWith(
+                                fontSize: 20,
+                                fontWeight: semiBold,
+                                color: cRedColor.withOpacity(0.5),
+                                letterSpacing: 0.4,
+                              ),
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      : SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(
+                              search.message,
+                              style: purpleTextStyle.copyWith(
+                                fontSize: 20,
+                                fontWeight: semiBold,
+                                color: cRedColor.withOpacity(0.5),
+                                letterSpacing: 0.4,
+                              ),
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -116,92 +166,8 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: cWhiteColor,
-      appBar: _buildAppBar(),
-      body: LayoutBuilder(
-        builder: (context, constraint) {
-          return FutureBuilder<String>(
-            future: DefaultAssetBundle.of(context)
-                .loadString('assets/json/restaurant.json'),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final List<RestaurantElement> rest = _parseRest(snapshot.data);
-                return CustomScrollView(
-                  slivers: [
-                    SliverPersistentHeader(
-                      delegate: SliverSearch(
-                        controller: _controller,
-                        searchRestItem: _searchRestItem,
-                      ),
-                      floating: true,
-                    ),
-                    constraint.maxWidth <= 700
-                        ? SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return _search.isNotEmpty ||
-                                        _controller.text.isNotEmpty
-                                    ? ItemRestaurant(rest: _search[index])
-                                    : ItemRestaurant(rest: rest[index]);
-                              },
-                              childCount: _search.isNotEmpty ||
-                                      _controller.text.isNotEmpty
-                                  ? _search.length
-                                  : rest.length,
-                            ),
-                          )
-                        : constraint.maxWidth <= 1200
-                            ? SliverGrid.count(
-                                crossAxisCount: 2,
-                                childAspectRatio: MediaQuery.of(context)
-                                        .size
-                                        .width /
-                                    (MediaQuery.of(context).size.height / 1.5),
-                                children: _search.isNotEmpty ||
-                                        _controller.text.isNotEmpty
-                                    ? _search
-                                        .map((e) => ItemRestaurant(rest: e))
-                                        .toList()
-                                    : rest
-                                        .map((e) => ItemRestaurant(rest: e))
-                                        .toList(),
-                              )
-                            : SliverGrid.count(
-                                crossAxisCount: 3,
-                                childAspectRatio:
-                                    MediaQuery.of(context).size.width /
-                                        MediaQuery.of(context).size.height,
-                                children: _search.isNotEmpty ||
-                                        _controller.text.isNotEmpty
-                                    ? _search
-                                        .map((e) => ItemRestaurant(rest: e))
-                                        .toList()
-                                    : rest
-                                        .map((e) => ItemRestaurant(rest: e))
-                                        .toList(),
-                              )
-                  ],
-                );
-              } else {
-                return Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Mohon Maaf\nTerjadi Kesalahan\nData Tidak Dapat Ditampilkan',
-                    style: purpleTextStyle.copyWith(
-                      fontSize: 20,
-                      fontWeight: semiBold,
-                      color: cRedColor.withOpacity(0.5),
-                      letterSpacing: 0.4,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-            },
-          );
-        },
-      ),
+      appBar: _buildAppBar(context),
+      body: _buildBody(),
     );
   }
 }

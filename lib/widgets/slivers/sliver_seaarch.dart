@@ -4,7 +4,7 @@ import '/shared/style.dart';
 
 class SliverSearch extends SliverPersistentHeaderDelegate {
   TextEditingController controller;
-  void Function(String)? searchRestItem;
+  void Function(String value)? searchRestItem;
 
   SliverSearch({
     required this.controller,
@@ -52,11 +52,11 @@ class SliverSearch extends SliverPersistentHeaderDelegate {
                   Expanded(
                     child: TextField(
                       controller: controller,
-                      onChanged: searchRestItem,
+                      onSubmitted: searchRestItem,
                       textInputAction: TextInputAction.search,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        hintText: 'Cari restaurant',
+                        hintText: 'Cari menu, restaurant',
                         hintStyle: greyTextStyle.copyWith(
                           fontSize: 16,
                           fontWeight: regular,

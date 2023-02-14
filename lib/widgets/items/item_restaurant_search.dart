@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:maem_app/data/models/restaurant_search.dart';
 
 import '/data/api/api_service.dart';
-import '/data/models/restaurant_list.dart';
 import '/pages/detail_page.dart';
 import '/shared/style.dart';
 
-class ItemRestaurant extends StatelessWidget {
-  final RestaurantList rest;
+class ItemRestaurantSearch extends StatelessWidget {
+  final RestaurantSearch restSearch;
 
   final ApiService _apiService = ApiService();
 
-  ItemRestaurant({
+  ItemRestaurantSearch({
     super.key,
-    required this.rest,
+    required this.restSearch,
   });
 
   @override
@@ -22,7 +22,7 @@ class ItemRestaurant extends StatelessWidget {
         Navigator.pushNamed(
           context,
           DetailPage.routeName,
-          arguments: rest.id,
+          arguments: restSearch.id,
         );
       },
       child: Container(
@@ -35,7 +35,7 @@ class ItemRestaurant extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Hero(
-              tag: rest.id,
+              tag: restSearch.id,
               child: Container(
                 width: double.infinity,
                 height: 150,
@@ -43,7 +43,7 @@ class ItemRestaurant extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                   image: DecorationImage(
                     image: NetworkImage(
-                      _apiService.getImagesLarge(rest.pictureId),
+                      _apiService.getImagesLarge(restSearch.pictureId),
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -61,7 +61,7 @@ class ItemRestaurant extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      rest.name,
+                      restSearch.name,
                       style: blackTextStyle.copyWith(
                         fontSize: 20,
                         fontWeight: semiBold,
@@ -82,7 +82,7 @@ class ItemRestaurant extends StatelessWidget {
                           width: 4,
                         ),
                         Text(
-                          rest.city,
+                          restSearch.city,
                           style: blackTextStyle.copyWith(
                             fontSize: 16,
                             fontWeight: medium,
@@ -104,7 +104,7 @@ class ItemRestaurant extends StatelessWidget {
                       width: 4,
                     ),
                     Text(
-                      rest.rating.toString(),
+                      restSearch.rating.toString(),
                       style: blackTextStyle.copyWith(
                         fontSize: 16,
                         fontWeight: medium,
