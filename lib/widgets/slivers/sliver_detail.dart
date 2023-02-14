@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '/models/restaurant.dart';
+import '/data/api/api_service.dart';
+import '/data/models/restaurant_detail.dart';
 import '/shared/style.dart';
 
 class SliverDetail extends SliverPersistentHeaderDelegate {
-  RestaurantElement rest;
+  RestaurantDetail restDetail;
 
   SliverDetail({
-    required this.rest,
+    required this.restDetail,
   });
 
   @override
@@ -16,13 +17,15 @@ class SliverDetail extends SliverPersistentHeaderDelegate {
     return Stack(
       children: [
         Hero(
-          tag: rest.id,
+          tag: restDetail.id,
           child: Container(
             width: double.infinity,
-            height: 400,
+            height: 350,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(rest.pictureId),
+                image: NetworkImage(
+                  ApiService().getImagesLarge(restDetail.pictureId),
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -32,7 +35,7 @@ class SliverDetail extends SliverPersistentHeaderDelegate {
           width: double.infinity,
           height: maxExtent,
           alignment: Alignment.bottomLeft,
-          padding: const EdgeInsets.only(left: 20, bottom: 20),
+          padding: const EdgeInsets.only(left: padding, bottom: padding),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -44,7 +47,7 @@ class SliverDetail extends SliverPersistentHeaderDelegate {
             ),
           ),
           child: Text(
-            rest.name,
+            restDetail.name,
             style: whiteTextStyle.copyWith(
               fontSize: 30,
               fontWeight: bold,
@@ -58,7 +61,7 @@ class SliverDetail extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 400;
+  double get maxExtent => 350;
 
   @override
   double get minExtent => 250;

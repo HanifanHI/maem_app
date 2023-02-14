@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '/widgets/dialogs/logout.dart';
-import '/pages/login_page.dart';
-import '/shared/style.dart';
+import '../widgets/dialogs/logout.dart';
+import '../pages/login_page.dart';
+import '../shared/style.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

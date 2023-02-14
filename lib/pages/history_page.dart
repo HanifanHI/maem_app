@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '/widgets/items/item_info.dart';
-import '/shared/style.dart';
+import '../widgets/items/item_info.dart';
+import '../shared/style.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});

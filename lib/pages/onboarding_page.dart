@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import '/widgets/items/item_onboarding.dart';
-import '/pages/login_page.dart';
-import '/shared/style.dart';
+import '../widgets/items/item_onboarding.dart';
+import '../pages/login_page.dart';
+import '../shared/style.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});

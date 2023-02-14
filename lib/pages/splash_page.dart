@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '/pages/onboarding_page.dart';
-import '/shared/style.dart';
+import '../pages/onboarding_page.dart';
+import '../shared/style.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});

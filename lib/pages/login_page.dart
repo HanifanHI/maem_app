@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '/widgets/dialogs/login_gagal.dart';
-import '/pages/main_page.dart';
-import '/shared/style.dart';
+import '../widgets/dialogs/login_gagal.dart';
+import '../pages/main_page.dart';
+import '../shared/style.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
